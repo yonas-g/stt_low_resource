@@ -2,3 +2,5 @@ grabo
 .ipynb_checkpoints
 sample.wav
 Voice.wav
+Data
+__pycache__
