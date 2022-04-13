@@ -112,7 +112,7 @@ class ICASSP2CNN(nn.Module):
     
 
 class ICASSP1CNN(nn.Module):
-    def __init__(self, vocab_size, embed_size=128, hidden_size=512, num_lstm_layers = 2, bidirectional = False, label_size=31):
+    def __init__(self, vocab_size, embed_size=256, hidden_size=512, num_lstm_layers = 2, bidirectional = False, label_size=31):
         super().__init__()
         self.n_layers = num_lstm_layers 
         self.hidden = hidden_size

@@ -1,6 +1,10 @@
 import numpy as np
+from argparse import Namespace
 import allosaurus
 from allosaurus.app import read_recognizer
+from allosaurus.audio import read_audio
+from allosaurus.pm.factory import read_pm
+from allosaurus.model import resolve_model_name, get_all_models, get_model_path
 
 
 model = read_recognizer('latest')
@@ -20,11 +24,19 @@ def encode(transcript):
     
     return one_hot
 
-def recognize(audio_path):
+def recognize(audio_path, feats=False):
     '''
     accepts audio file path and returns the transcript
     '''
-    return model.recognize(audio_path)
+    if feats == False:
+        return model.recognize(audio_path)
+    else:
+        model_path = get_model_path("latest")
+        model_name = resolve_model_name("latest", None)
+        inference_config = Namespace(model=model_name, device_id=-1, lang='ipa', approximate=False, prior=None)
+        pm = read_pm(model_path, inference_config)
+        audio = read_audio(audio_path)
+        return pm.compute(audio)
 
 def list_phones():
     return phones
