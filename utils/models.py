@@ -149,7 +149,7 @@ class ICASSP1CNN(nn.Module):
 
         input = input.transpose(1,2)
 
-        pack_tensor = nn.utils.rnn.pack_padded_sequence(input, lengths, batch_first=True)
+        pack_tensor = nn.utils.rnn.pack_padded_sequence(input, lengths, batch_first=True,enforce_sorted=False)
         _, (hn, cn) = self.lstm(pack_tensor)
 
         if self.bidirectional:
