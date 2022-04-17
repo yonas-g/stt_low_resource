@@ -46,7 +46,7 @@ def recognize(audio_path, feats=False):
 
 def list_phones():
     return PHONE
-def get_similar(path, how_close=2):
+def get_less_probable(path, how_close=2):
     output = MODEL.recognize(path, topk=how_close)
     pattern = r"\([^()]*\)"
     output = re.sub(pattern, ",", output).split(" , | ")
