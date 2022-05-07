@@ -112,11 +112,12 @@ class ICASSP2CNN(nn.Module):
     
 
 class ICASSP1CNN(nn.Module):
-    def __init__(self, vocab_size, embed_size=256, hidden_size=512, num_lstm_layers = 2, bidirectional = False, label_size=31):
+    def __init__(self, vocab_size, embed_size=256, hidden_size=256, num_lstm_layers = 2, bidirectional = False, label_size=31, dropout=False):
         super().__init__()
         self.n_layers = num_lstm_layers 
         self.hidden = hidden_size
         self.bidirectional = bidirectional
+        
         
         self.embed = nn.Embedding(vocab_size, embed_size)
 
@@ -127,13 +128,15 @@ class ICASSP1CNN(nn.Module):
         self.lstm = nn.LSTM(input_size = embed_size, 
                             hidden_size = hidden_size, 
                             num_layers = num_lstm_layers, 
-                            bidirectional = bidirectional)
+                            bidirectional = bidirectional,
+                            dropout = 0.5 if dropout else 0)
 
         self.linear = nn.Linear(in_features = 2 * hidden_size if bidirectional else hidden_size, 
                                 out_features = label_size)
+        
 
 
-    def forward(self, x, lengths):
+    def forward(self, x, lengths, feats=False):
         """
         padded_x: (B,T) padded LongTensor
         """
@@ -144,6 +147,8 @@ class ICASSP1CNN(nn.Module):
         input = input.transpose(1,2)    # (B,T,H) -> (B,H,T)
 
         cnn_output = self.cnn(input)
+        if feats:
+            return cnn_output
 
         input = F.relu(self.batchnorm(cnn_output))
 
